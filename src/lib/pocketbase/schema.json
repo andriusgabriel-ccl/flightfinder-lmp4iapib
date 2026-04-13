@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-13T02:27:28.516Z",
+  "generatedAt": "2026-04-13T02:46:32.692Z",
   "collections": [
     {
       "name": "users",
@@ -42,6 +42,181 @@
       "indexes": [
         "CREATE UNIQUE INDEX `idx_tokenKey__pb_users_auth_` ON `users` (`tokenKey`)",
         "CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''"
+      ]
+    },
+    {
+      "name": "airports",
+      "type": "base",
+      "apiRules": {
+        "list": "",
+        "view": "",
+        "create": null,
+        "update": null,
+        "delete": null
+      },
+      "fields": [
+        {
+          "name": "iata_code",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "city_name",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "country",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": ["CREATE UNIQUE INDEX idx_airports_iata ON airports (iata_code)"]
+    },
+    {
+      "name": "airlines",
+      "type": "base",
+      "apiRules": {
+        "list": "",
+        "view": "",
+        "create": null,
+        "update": null,
+        "delete": null
+      },
+      "fields": [
+        {
+          "name": "name",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "logo_url",
+          "type": "url",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "miles_per_1k",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "name": "flights",
+      "type": "base",
+      "apiRules": {
+        "list": "",
+        "view": "",
+        "create": null,
+        "update": null,
+        "delete": null
+      },
+      "fields": [
+        {
+          "name": "airline_id",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "airlines"
+        },
+        {
+          "name": "origin_airport_id",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "airports"
+        },
+        {
+          "name": "destination_airport_id",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "airports"
+        },
+        {
+          "name": "departure_time",
+          "type": "date",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "arrival_time",
+          "type": "date",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "duration_minutes",
+          "type": "number",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "price_brl",
+          "type": "number",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "available_seats",
+          "type": "number",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": [
+        "CREATE INDEX idx_flights_airline ON flights (airline_id)",
+        "CREATE INDEX idx_flights_origin ON flights (origin_airport_id)",
+        "CREATE INDEX idx_flights_destination ON flights (destination_airport_id)"
       ]
     }
   ]
