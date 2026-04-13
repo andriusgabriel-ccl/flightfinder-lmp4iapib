@@ -152,6 +152,7 @@ migrate(
       rec.set('duration_minutes', route.dur)
       rec.set('price_brl', route.brl + i * 10)
       rec.set('available_seats', 20 + ((i * 5) % 150))
+      rec.set('stops', i % 4 === 0 ? 1 : 0)
       app.save(rec)
     }
   },

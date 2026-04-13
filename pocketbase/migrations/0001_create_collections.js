@@ -75,6 +75,7 @@ migrate(
         { name: 'duration_minutes', type: 'number', required: true },
         { name: 'price_brl', type: 'number', required: true },
         { name: 'available_seats', type: 'number', required: true },
+        { name: 'stops', type: 'number', required: true },
         { name: 'created', type: 'autodate', onCreate: true, onUpdate: false },
         { name: 'updated', type: 'autodate', onCreate: true, onUpdate: true },
       ],
