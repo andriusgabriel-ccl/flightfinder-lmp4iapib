@@ -55,8 +55,10 @@ export function FlightCard({ flight, passengers }: FlightCardProps) {
             </span>
             <div className="w-full flex items-center">
               <div className="h-px bg-slate-300 flex-1"></div>
-              <div className="px-3 py-1 text-[10px] font-semibold text-[#0066CC] uppercase bg-slate-50 rounded-full border border-slate-200 mx-2">
-                Voo
+              <div className="px-3 py-1 text-[10px] font-semibold text-[#0066CC] uppercase bg-slate-50 rounded-full border border-slate-200 mx-2 whitespace-nowrap">
+                {flight.stops === 0
+                  ? 'Direto'
+                  : `${flight.stops} Parada${flight.stops > 1 ? 's' : ''}`}
               </div>
               <div className="h-px bg-slate-300 flex-1"></div>
             </div>

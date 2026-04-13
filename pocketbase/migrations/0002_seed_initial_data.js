@@ -121,6 +121,7 @@ migrate(
         brl: 350,
         miles: 18000,
         seats: 120,
+        stops: 0,
       },
       {
         a: 'Gol',
@@ -135,6 +136,7 @@ migrate(
         brl: 280,
         miles: 15000,
         seats: 50,
+        stops: 0,
       },
       {
         a: 'Latam',
@@ -149,6 +151,7 @@ migrate(
         brl: 310,
         miles: 16000,
         seats: 20,
+        stops: 1,
       },
       {
         a: 'Azul',
@@ -163,6 +166,7 @@ migrate(
         brl: 400,
         miles: 26000,
         seats: 100,
+        stops: 0,
       },
       {
         a: 'Gol',
@@ -177,6 +181,7 @@ migrate(
         brl: 500,
         miles: 25000,
         seats: 80,
+        stops: 0,
       },
     ]
 
@@ -191,6 +196,7 @@ migrate(
       rec.set('price_brl', f.brl)
       rec.set('price_miles', f.miles)
       rec.set('available_seats', f.seats)
+      rec.set('stops', f.stops)
       app.save(rec)
     }
   },

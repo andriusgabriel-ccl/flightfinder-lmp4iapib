@@ -25,6 +25,7 @@ export interface Flight {
   price_brl: number
   price_miles: number
   available_seats: number
+  stops: number
   expand?: {
     airline_id: Airline
     origin_airport_id: Airport
