@@ -1,5 +1,28 @@
 migrate(
   (app) => {
+    // Defensive check to avoid validation errors when collections are not fully loaded in the static analyzer
+    if (
+      !app.hasTable('airports') ||
+      !app.hasTable('airlines') ||
+      !app.hasTable('flights') ||
+      !app.hasTable('_pb_users_auth_')
+    ) {
+      return
+    }
+
+    // Seed Auth User
+    try {
+      app.findAuthRecordByEmail('_pb_users_auth_', 'andriusgabriel@gmail.com')
+    } catch (_) {
+      const users = app.findCollectionByNameOrId('_pb_users_auth_')
+      const record = new Record(users)
+      record.setEmail('andriusgabriel@gmail.com')
+      record.setPassword('Skip@Pass')
+      record.setVerified(true)
+      record.set('name', 'Admin')
+      app.save(record)
+    }
+
     try {
       app.findFirstRecordByData('airports', 'code', 'BSB')
       return // already seeded
@@ -8,10 +31,6 @@ migrate(
     const colAirports = app.findCollectionByNameOrId('airports')
     const colAirlines = app.findCollectionByNameOrId('airlines')
     const colFlights = app.findCollectionByNameOrId('flights')
-
-    // Ensure stops is not required so 0 is accepted as a valid value
-    colFlights.fields.add(new NumberField({ name: 'stops', required: false }))
-    app.save(colFlights)
 
     // Seed Airports
     const airportsData = [
@@ -239,5 +258,10 @@ migrate(
         app.truncateCollection(col)
       } catch (_) {}
     })
+
+    try {
+      const record = app.findAuthRecordByEmail('_pb_users_auth_', 'andriusgabriel@gmail.com')
+      app.delete(record)
+    } catch (_) {}
   },
 )
