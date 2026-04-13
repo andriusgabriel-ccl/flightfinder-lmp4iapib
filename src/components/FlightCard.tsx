@@ -2,6 +2,7 @@ import { Flight } from '@/services/api'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Button } from './ui/button'
+import { cn } from '@/lib/utils'
 
 interface FlightCardProps {
   flight: Flight
@@ -20,6 +21,7 @@ export function FlightCard({ flight, passengers }: FlightCardProps) {
   const milesCashEquivalent = (totalMiles / 1000) * airline.miles_per_1k
 
   const isMilesBetter = milesCashEquivalent < totalCash
+  const bestOptionValue = isMilesBetter ? milesCashEquivalent : totalCash
 
   const depDate = new Date(flight.departure_time)
   const arrDate = new Date(flight.arrival_time)
@@ -79,46 +81,56 @@ export function FlightCard({ flight, passengers }: FlightCardProps) {
             Para {passengers} pessoa{passengers > 1 ? 's' : ''}
           </span>
 
-          {isMilesBetter ? (
-            <div className="flex flex-col">
-              <span className="text-xs font-semibold text-green-700 uppercase bg-green-100 px-2 py-1 rounded w-max mb-1">
-                Melhor opção em Milhas
-              </span>
-              <div className="text-2xl font-bold text-[#FF6B35] leading-tight mt-1">
-                {totalMiles.toLocaleString('pt-BR')} Milhas
-              </div>
-              <span className="text-xs text-slate-500 mt-1">
-                (Equivalente a R${' '}
-                {milesCashEquivalent.toLocaleString('pt-BR', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-                )
-              </span>
-              <span className="text-xs text-slate-400 mt-1">
-                Preço BRL: R$ {totalCash.toLocaleString('pt-BR')}
-              </span>
-            </div>
-          ) : (
-            <div className="flex flex-col">
-              <span className="text-xs font-semibold text-green-700 uppercase bg-green-100 px-2 py-1 rounded w-max mb-1">
-                Melhor opção em Reais
-              </span>
-              <div className="text-2xl font-bold text-[#0066CC] leading-tight mt-1">
-                R$ {totalCash.toLocaleString('pt-BR')}
-              </div>
-              <span className="text-xs text-slate-500 mt-1">
-                Milhas ({totalMiles.toLocaleString('pt-BR')}) custariam R${' '}
-                {milesCashEquivalent.toLocaleString('pt-BR', {
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold text-green-700 uppercase bg-green-100 px-2 py-1 rounded w-max mb-3">
+              Melhor opção: R${' '}
+              {bestOptionValue.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </span>
+
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm text-slate-600">Reais:</span>
+              <span
+                className={cn(
+                  'font-bold text-lg',
+                  !isMilesBetter ? 'text-[#0066CC]' : 'text-slate-700',
+                )}
+              >
+                R${' '}
+                {totalCash.toLocaleString('pt-BR', {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}
               </span>
             </div>
-          )}
+
+            <div className="flex justify-between items-start">
+              <span className="text-sm text-slate-600 mt-1">Milhas:</span>
+              <div className="text-right">
+                <span
+                  className={cn(
+                    'font-bold text-lg',
+                    isMilesBetter ? 'text-[#FF6B35]' : 'text-slate-700',
+                  )}
+                >
+                  {totalMiles.toLocaleString('pt-BR')}
+                </span>
+                <span className="text-[10px] text-slate-400 block leading-tight">
+                  (R${' '}
+                  {milesCashEquivalent.toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                  )
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <Button className="w-full bg-[#FF6B35] hover:bg-[#E55A2B] text-white font-bold h-12">
+        <Button className="w-full bg-[#FF6B35] hover:bg-[#E55A2B] text-white font-bold h-12 mt-2">
           Selecionar
         </Button>
       </div>

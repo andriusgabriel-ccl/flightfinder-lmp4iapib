@@ -56,20 +56,85 @@ export const searchFlights = async (
   destinationCode: string,
   departureDate?: string,
 ): Promise<Flight[]> => {
-  try {
-    let filter = `origin_airport_id.iata_code = "${originCode}" && destination_airport_id.iata_code = "${destinationCode}"`
+  // Use mock data as per acceptance criteria (without querying the database initially)
+  const MOCK_AIRLINES: Airline[] = [
+    {
+      id: 'a1',
+      name: 'LATAM',
+      logo_url: 'https://img.usecurling.com/i?q=airline&color=red',
+      miles_per_1k: 28,
+    },
+    {
+      id: 'a2',
+      name: 'Gol',
+      logo_url: 'https://img.usecurling.com/i?q=airline&color=orange',
+      miles_per_1k: 30,
+    },
+    {
+      id: 'a3',
+      name: 'Azul',
+      logo_url: 'https://img.usecurling.com/i?q=airline&color=blue',
+      miles_per_1k: 25,
+    },
+    {
+      id: 'a4',
+      name: 'VOEPASS',
+      logo_url: 'https://img.usecurling.com/i?q=airline&color=yellow',
+      miles_per_1k: 20,
+    },
+    {
+      id: 'a5',
+      name: 'Avianca',
+      logo_url: 'https://img.usecurling.com/i?q=airline&color=red',
+      miles_per_1k: 35,
+    },
+  ]
 
-    if (departureDate) {
-      filter += ` && departure_time >= "${departureDate} 00:00:00" && departure_time <= "${departureDate} 23:59:59"`
-    }
-
-    return await pb.collection('flights').getFullList({
-      filter,
-      expand: 'airline_id,origin_airport_id,destination_airport_id',
-      sort: 'price_brl',
-    })
-  } catch (e) {
-    console.error('Failed to search flights:', e)
-    return []
+  const origin: Airport = {
+    id: 'ap_org',
+    iata_code: originCode,
+    city_name: 'Origem',
+    country: 'BR',
   }
+  const dest: Airport = {
+    id: 'ap_dst',
+    iata_code: destinationCode,
+    city_name: 'Destino',
+    country: 'BR',
+  }
+
+  const baseDate = departureDate ? new Date(departureDate + 'T00:00:00') : new Date()
+
+  const mockFlights: Flight[] = Array.from({ length: 10 }).map((_, i) => {
+    const airline = MOCK_AIRLINES[i % MOCK_AIRLINES.length]
+
+    const depTime = new Date(baseDate)
+    depTime.setHours(6 + i, (i * 15) % 60, 0)
+
+    const durationMinutes = 90 + i * 20
+    const arrTime = new Date(depTime)
+    arrTime.setMinutes(arrTime.getMinutes() + durationMinutes)
+
+    return {
+      id: `f_mock_${i}`,
+      airline_id: airline.id,
+      origin_airport_id: origin.id,
+      destination_airport_id: dest.id,
+      departure_time: depTime.toISOString(),
+      arrival_time: arrTime.toISOString(),
+      duration_minutes: durationMinutes,
+      price_brl: 300 + i * 45 - (i % 2 === 0 ? 20 : 0),
+      price_miles: 10000 + i * 1200 + (i % 3 === 0 ? 500 : 0),
+      available_seats: 10 + i,
+      stops: i % 4 === 0 ? 1 : 0,
+      expand: {
+        airline_id: airline,
+        origin_airport_id: origin,
+        destination_airport_id: dest,
+      },
+    }
+  })
+
+  // Simulate network delay
+  return new Promise((resolve) => setTimeout(() => resolve(mockFlights), 600))
 }

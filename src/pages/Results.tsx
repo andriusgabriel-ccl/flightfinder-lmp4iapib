@@ -8,6 +8,13 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { Plane } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 const Results = () => {
   const [searchParams] = useSearchParams()
@@ -21,6 +28,7 @@ const Results = () => {
 
   // Filters State
   const [airlinesFilter, setAirlinesFilter] = useState<string[]>([])
+  const [sortBy, setSortBy] = useState<string>('price_asc')
 
   const fetchFlights = async () => {
     setLoading(true)
@@ -51,12 +59,27 @@ const Results = () => {
   }, [flights])
 
   const filteredFlights = useMemo(() => {
-    return flights.filter((f) => {
+    const filtered = flights.filter((f) => {
       const matchAirline =
         airlinesFilter.length === 0 || airlinesFilter.includes(f.expand?.airline_id?.name || '')
       return matchAirline
     })
-  }, [flights, airlinesFilter])
+
+    return filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'price_asc':
+          return a.price_brl - b.price_brl
+        case 'miles_asc':
+          return a.price_miles - b.price_miles
+        case 'duration_asc':
+          return a.duration_minutes - b.duration_minutes
+        case 'airline_asc':
+          return (a.expand?.airline_id?.name || '').localeCompare(b.expand?.airline_id?.name || '')
+        default:
+          return 0
+      }
+    })
+  }, [flights, airlinesFilter, sortBy])
 
   const toggleAirline = (airlineName: string) => {
     setAirlinesFilter((prev) =>
@@ -101,6 +124,21 @@ const Results = () => {
                 <p className="text-sm text-slate-500">Nenhuma companhia disponível</p>
               )}
             </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 className="font-bold text-slate-800 mb-4">Ordenar por</h3>
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="price_asc">Preço (Menor primeiro)</SelectItem>
+                <SelectItem value="miles_asc">Milhas (Menor primeiro)</SelectItem>
+                <SelectItem value="duration_asc">Duração (Menor primeiro)</SelectItem>
+                <SelectItem value="airline_asc">Companhia Aérea (A-Z)</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </aside>
 
