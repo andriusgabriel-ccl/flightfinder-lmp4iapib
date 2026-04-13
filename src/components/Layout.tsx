@@ -24,7 +24,6 @@ export default function Layout() {
               Passagens
             </Link>
             <span className="text-sm font-medium text-slate-400 cursor-not-allowed">Hotéis</span>
-            <span className="text-sm font-medium text-slate-400 cursor-not-allowed">Pacotes</span>
             {user && (
               <span className="text-sm font-medium text-slate-700 hover:text-[#0066CC] cursor-pointer">
                 Minhas Viagens

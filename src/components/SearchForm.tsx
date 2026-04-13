@@ -47,9 +47,9 @@ export function SearchForm({
   useEffect(() => {
     getAirports().then((data) => {
       setAirports(data)
-      if (initialOrigin) setOrigin(data.find((a) => a.code === initialOrigin) || null)
+      if (initialOrigin) setOrigin(data.find((a) => a.iata_code === initialOrigin) || null)
       if (initialDestination)
-        setDestination(data.find((a) => a.code === initialDestination) || null)
+        setDestination(data.find((a) => a.iata_code === initialDestination) || null)
     })
   }, [initialOrigin, initialDestination])
 
@@ -59,10 +59,10 @@ export function SearchForm({
   }
 
   const handleSearch = () => {
-    if (!origin || !destination) return
+    if (!origin || !destination || origin.iata_code === destination.iata_code) return
     const params = new URLSearchParams({
-      origin: origin.code,
-      destination: destination.code,
+      origin: origin.iata_code,
+      destination: destination.iata_code,
       date: date ? date.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
       passengers: passengers.toString(),
     })
@@ -84,10 +84,10 @@ export function SearchForm({
         >
           <MapPin className="mr-2 h-5 w-5 text-slate-400" />
           {value ? (
-            <div className="flex flex-col items-start leading-tight">
+            <div className="flex flex-col items-start leading-tight truncate overflow-hidden">
               <span className="text-xs text-slate-500">{placeholder}</span>
-              <span className="font-semibold text-sm">
-                {value.code} - {value.city}
+              <span className="font-semibold text-sm truncate max-w-full">
+                {value.iata_code} - {value.city_name}
               </span>
             </div>
           ) : (
@@ -102,11 +102,11 @@ export function SearchForm({
             <CommandEmpty>Nenhum aeroporto encontrado.</CommandEmpty>
             <CommandGroup>
               {airports
-                .filter((a) => a.code !== excludeCode)
+                .filter((a) => a.iata_code !== excludeCode)
                 .map((airport) => (
                   <CommandItem
                     key={airport.id}
-                    value={`${airport.code} ${airport.city} ${airport.name}`}
+                    value={`${airport.iata_code} ${airport.city_name} ${airport.country}`}
                     onSelect={() => {
                       onChange(airport)
                       setOpen(false)
@@ -115,9 +115,9 @@ export function SearchForm({
                     <MapPin className="mr-2 h-4 w-4 opacity-50" />
                     <div className="flex flex-col">
                       <span className="font-medium">
-                        {airport.city} ({airport.code})
+                        {airport.city_name} ({airport.iata_code})
                       </span>
-                      <span className="text-xs text-slate-500">{airport.name}</span>
+                      <span className="text-xs text-slate-500">{airport.country}</span>
                     </div>
                   </CommandItem>
                 ))}
@@ -149,7 +149,7 @@ export function SearchForm({
             open={openOrigin}
             setOpen={setOpenOrigin}
             placeholder="Origem"
-            excludeCode={destination?.code}
+            excludeCode={destination?.iata_code}
           />
         </div>
 
@@ -183,7 +183,7 @@ export function SearchForm({
             open={openDest}
             setOpen={setOpenDest}
             placeholder="Destino"
-            excludeCode={origin?.code}
+            excludeCode={origin?.iata_code}
           />
         </div>
       </div>
@@ -215,7 +215,7 @@ export function SearchForm({
               selected={date}
               onSelect={setDate}
               initialFocus
-              disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+              disabled={(date: Date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
             />
           </PopoverContent>
         </Popover>
@@ -244,7 +244,7 @@ export function SearchForm({
               mode="single"
               selected={returnDate}
               onSelect={setReturnDate}
-              disabled={(rDate) => (date ? rDate < date : rDate < new Date())}
+              disabled={(rDate: Date) => (date ? rDate < date : rDate < new Date())}
               initialFocus
             />
           </PopoverContent>
@@ -306,7 +306,7 @@ export function SearchForm({
 
         <Button
           onClick={handleSearch}
-          disabled={!origin || !destination}
+          disabled={!origin || !destination || origin.iata_code === destination.iata_code}
           className={cn(
             'bg-[#FF6B35] hover:bg-[#E55A2B] text-white font-bold text-lg h-14',
             isVertical ? 'w-full mt-2' : 'w-full lg:w-auto px-8',

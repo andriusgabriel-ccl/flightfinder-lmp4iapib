@@ -2,37 +2,38 @@ import pb from '@/lib/pocketbase/client'
 
 export interface Airport {
   id: string
-  code: string
-  name: string
-  city: string
+  iata_code: string
+  city_name: string
+  country: string
 }
 
 export interface Airline {
   id: string
   name: string
-  logo: string
-  miles_rate_per_1k: number
+  logo_url: string
+  miles_per_1k: number
 }
 
 export interface Flight {
   id: string
-  airline: string
-  origin: string
-  destination: string
+  airline_id: string
+  origin_airport_id: string
+  destination_airport_id: string
   departure_time: string
   arrival_time: string
+  duration_minutes: number
   price_brl: number
   price_miles: number
-  stops: number
+  available_seats: number
   expand?: {
-    airline: Airline
-    origin: Airport
-    destination: Airport
+    airline_id: Airline
+    origin_airport_id: Airport
+    destination_airport_id: Airport
   }
 }
 
 export const getAirports = async (): Promise<Airport[]> => {
-  return pb.collection('airports').getFullList({ sort: 'city' })
+  return pb.collection('airports').getFullList({ sort: 'city_name' })
 }
 
 export const getAirlines = async (): Promise<Airline[]> => {
@@ -42,12 +43,12 @@ export const getAirlines = async (): Promise<Airline[]> => {
 export const searchFlights = async (
   originCode: string,
   destinationCode: string,
-  _departureDate?: string, // Simplified: Ignoring strict date matching for better mock data yield
+  _departureDate?: string,
 ): Promise<Flight[]> => {
-  const filter = `origin.code = "${originCode}" && destination.code = "${destinationCode}"`
+  const filter = `origin_airport_id.iata_code = "${originCode}" && destination_airport_id.iata_code = "${destinationCode}"`
   return pb.collection('flights').getFullList({
     filter,
-    expand: 'airline,origin,destination',
+    expand: 'airline_id,origin_airport_id,destination_airport_id',
     sort: 'price_brl',
   })
 }
