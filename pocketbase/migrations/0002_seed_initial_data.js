@@ -100,6 +100,13 @@ migrate(
     }
 
     const colFlights = app.findCollectionByNameOrId('flights')
+
+    const stopsField = colFlights.fields.getByName('stops')
+    if (stopsField && stopsField.required) {
+      stopsField.required = false
+      app.save(colFlights)
+    }
+
     const baseRoutes = [
       { o: 'GRU', d: 'GIG', dur: 60, brl: 350 },
       { o: 'GIG', d: 'GRU', dur: 60, brl: 350 },
