@@ -17,6 +17,7 @@ import {
 import { Calendar } from '@/components/ui/calendar'
 import { cn } from '@/lib/utils'
 import { Airport, getAirports } from '@/services/api'
+import { useToast } from '@/hooks/use-toast'
 
 interface SearchFormProps {
   layout?: 'horizontal' | 'vertical'
@@ -32,6 +33,7 @@ export function SearchForm({
   initialDate,
 }: SearchFormProps) {
   const navigate = useNavigate()
+  const { toast } = useToast()
   const [airports, setAirports] = useState<Airport[]>([])
   const [origin, setOrigin] = useState<Airport | null>(null)
   const [destination, setDestination] = useState<Airport | null>(null)
@@ -59,7 +61,30 @@ export function SearchForm({
   }
 
   const handleSearch = () => {
-    if (!origin || !destination || origin.iata_code === destination.iata_code) return
+    if (!origin) {
+      toast({
+        title: 'Atenção',
+        description: 'Por favor, selecione um aeroporto de origem.',
+        variant: 'destructive',
+      })
+      return
+    }
+    if (!destination) {
+      toast({
+        title: 'Atenção',
+        description: 'Por favor, selecione um aeroporto de destino.',
+        variant: 'destructive',
+      })
+      return
+    }
+    if (origin.iata_code === destination.iata_code) {
+      toast({
+        title: 'Atenção',
+        description: 'A origem e o destino não podem ser iguais.',
+        variant: 'destructive',
+      })
+      return
+    }
     const params = new URLSearchParams({
       origin: origin.iata_code,
       destination: destination.iata_code,
@@ -115,7 +140,7 @@ export function SearchForm({
                     <MapPin className="mr-2 h-4 w-4 opacity-50" />
                     <div className="flex flex-col">
                       <span className="font-medium">
-                        {airport.city_name} ({airport.iata_code})
+                        {airport.iata_code} - {airport.city_name}
                       </span>
                       <span className="text-xs text-slate-500">{airport.country}</span>
                     </div>
@@ -306,7 +331,6 @@ export function SearchForm({
 
         <Button
           onClick={handleSearch}
-          disabled={!origin || !destination || origin.iata_code === destination.iata_code}
           className={cn(
             'bg-[#FF6B35] hover:bg-[#E55A2B] text-white font-bold text-lg h-14',
             isVertical ? 'w-full mt-2' : 'w-full lg:w-auto px-8',

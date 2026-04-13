@@ -84,18 +84,19 @@ export function FlightCard({ flight, passengers }: FlightCardProps) {
               <span className="text-xs font-semibold text-green-700 uppercase bg-green-100 px-2 py-1 rounded w-max mb-1">
                 Melhor opção em Milhas
               </span>
-              <div className="text-3xl font-bold text-[#FF6B35]">
-                {totalMiles.toLocaleString('pt-BR')} <span className="text-lg">Milhas</span>
+              <div className="text-2xl font-bold text-[#FF6B35] leading-tight mt-1">
+                {totalMiles.toLocaleString('pt-BR')} Milhas
               </div>
               <span className="text-xs text-slate-500 mt-1">
-                Equivalente a R${' '}
+                (Equivalente a R${' '}
                 {milesCashEquivalent.toLocaleString('pt-BR', {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}
+                )
               </span>
-              <span className="text-xs text-slate-400">
-                (Preço em dinheiro: R$ {totalCash.toLocaleString('pt-BR')})
+              <span className="text-xs text-slate-400 mt-1">
+                Preço BRL: R$ {totalCash.toLocaleString('pt-BR')}
               </span>
             </div>
           ) : (
@@ -103,7 +104,7 @@ export function FlightCard({ flight, passengers }: FlightCardProps) {
               <span className="text-xs font-semibold text-green-700 uppercase bg-green-100 px-2 py-1 rounded w-max mb-1">
                 Melhor opção em Reais
               </span>
-              <div className="text-3xl font-bold text-[#0066CC]">
+              <div className="text-2xl font-bold text-[#0066CC] leading-tight mt-1">
                 R$ {totalCash.toLocaleString('pt-BR')}
               </div>
               <span className="text-xs text-slate-500 mt-1">
