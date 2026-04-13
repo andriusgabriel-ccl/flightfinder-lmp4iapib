@@ -9,6 +9,10 @@ migrate(
     const colAirlines = app.findCollectionByNameOrId('airlines')
     const colFlights = app.findCollectionByNameOrId('flights')
 
+    // Ensure stops is not required so 0 is accepted as a valid value
+    colFlights.fields.add(new NumberField({ name: 'stops', required: false }))
+    app.save(colFlights)
+
     // Seed Airports
     const airportsData = [
       { code: 'BSB', name: 'Aeroporto Internacional de Brasília', city: 'Brasília' },
