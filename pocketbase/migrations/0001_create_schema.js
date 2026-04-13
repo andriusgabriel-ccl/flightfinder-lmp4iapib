@@ -76,7 +76,7 @@ migrate(
         { name: 'arrival_time', type: 'date', required: true },
         { name: 'price_brl', type: 'number', required: true },
         { name: 'price_miles', type: 'number', required: true },
-        { name: 'stops', type: 'number', required: true },
+        { name: 'stops', type: 'number' },
         { name: 'created', type: 'autodate', onCreate: true, onUpdate: false },
         { name: 'updated', type: 'autodate', onCreate: true, onUpdate: true },
       ],
