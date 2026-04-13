@@ -37,6 +37,7 @@ export function FlightCard({ flight, passengers }: FlightCardProps) {
             className="h-8 w-8 object-contain rounded-sm"
           />
           <div>
+            <h4 className="text-base font-bold text-slate-800">{airline.name}</h4>
             <p className="text-sm text-slate-500 font-medium">
               IDA • {format(depDate, 'EEE, dd MMM yyyy', { locale: ptBR })}
             </p>

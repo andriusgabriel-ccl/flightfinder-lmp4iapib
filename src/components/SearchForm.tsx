@@ -313,7 +313,7 @@ export function SearchForm({
           )}
         >
           <Search className="mr-2 h-5 w-5" />
-          Buscar
+          Buscar Passagens
         </Button>
       </div>
     </div>

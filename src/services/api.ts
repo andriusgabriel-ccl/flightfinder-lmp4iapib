@@ -34,22 +34,42 @@ export interface Flight {
 }
 
 export const getAirports = async (): Promise<Airport[]> => {
-  return pb.collection('airports').getFullList({ sort: 'city_name' })
+  try {
+    return await pb.collection('airports').getFullList({ sort: 'city_name' })
+  } catch (e) {
+    console.error('Failed to get airports:', e)
+    return []
+  }
 }
 
 export const getAirlines = async (): Promise<Airline[]> => {
-  return pb.collection('airlines').getFullList({ sort: 'name' })
+  try {
+    return await pb.collection('airlines').getFullList({ sort: 'name' })
+  } catch (e) {
+    console.error('Failed to get airlines:', e)
+    return []
+  }
 }
 
 export const searchFlights = async (
   originCode: string,
   destinationCode: string,
-  _departureDate?: string,
+  departureDate?: string,
 ): Promise<Flight[]> => {
-  const filter = `origin_airport_id.iata_code = "${originCode}" && destination_airport_id.iata_code = "${destinationCode}"`
-  return pb.collection('flights').getFullList({
-    filter,
-    expand: 'airline_id,origin_airport_id,destination_airport_id',
-    sort: 'price_brl',
-  })
+  try {
+    let filter = `origin_airport_id.iata_code = "${originCode}" && destination_airport_id.iata_code = "${destinationCode}"`
+
+    if (departureDate) {
+      filter += ` && departure_time >= "${departureDate} 00:00:00" && departure_time <= "${departureDate} 23:59:59"`
+    }
+
+    return await pb.collection('flights').getFullList({
+      filter,
+      expand: 'airline_id,origin_airport_id,destination_airport_id',
+      sort: 'price_brl',
+    })
+  } catch (e) {
+    console.error('Failed to search flights:', e)
+    return []
+  }
 }
