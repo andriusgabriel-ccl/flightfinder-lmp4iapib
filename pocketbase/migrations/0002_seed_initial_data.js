@@ -23,26 +23,24 @@ migrate(
     const airportsData = [
       { code: 'GRU', city: 'São Paulo', country: 'Brasil' },
       { code: 'GIG', city: 'Rio de Janeiro', country: 'Brasil' },
-      { code: 'CGH', city: 'São Paulo', country: 'Brasil' },
       { code: 'BSB', city: 'Brasília', country: 'Brasil' },
       { code: 'CNF', city: 'Belo Horizonte', country: 'Brasil' },
       { code: 'VCP', city: 'Campinas', country: 'Brasil' },
-      { code: 'SDU', city: 'Rio de Janeiro', country: 'Brasil' },
-      { code: 'POA', city: 'Porto Alegre', country: 'Brasil' },
       { code: 'SSA', city: 'Salvador', country: 'Brasil' },
       { code: 'REC', city: 'Recife', country: 'Brasil' },
+      { code: 'POA', city: 'Porto Alegre', country: 'Brasil' },
       { code: 'CWB', city: 'Curitiba', country: 'Brasil' },
       { code: 'FOR', city: 'Fortaleza', country: 'Brasil' },
-      { code: 'FLN', city: 'Florianópolis', country: 'Brasil' },
-      { code: 'BEL', city: 'Belém', country: 'Brasil' },
-      { code: 'VIX', city: 'Vitória', country: 'Brasil' },
-      { code: 'GYN', city: 'Goiânia', country: 'Brasil' },
-      { code: 'MAO', city: 'Manaus', country: 'Brasil' },
-      { code: 'NAT', city: 'Natal', country: 'Brasil' },
-      { code: 'MCZ', city: 'Maceió', country: 'Brasil' },
-      { code: 'LHR', city: 'Londres', country: 'Reino Unido' },
       { code: 'JFK', city: 'Nova Iorque', country: 'Estados Unidos' },
+      { code: 'LHR', city: 'Londres', country: 'Reino Unido' },
       { code: 'CDG', city: 'Paris', country: 'França' },
+      { code: 'AMS', city: 'Amsterdã', country: 'Holanda' },
+      { code: 'MAD', city: 'Madri', country: 'Espanha' },
+      { code: 'EZE', city: 'Buenos Aires', country: 'Argentina' },
+      { code: 'SCL', city: 'Santiago', country: 'Chile' },
+      { code: 'LIM', city: 'Lima', country: 'Peru' },
+      { code: 'MEX', city: 'Cidade do México', country: 'México' },
+      { code: 'MIA', city: 'Miami', country: 'Estados Unidos' },
     ]
 
     const airportIds = {}
@@ -58,34 +56,29 @@ migrate(
     const colAirlines = app.findCollectionByNameOrId('airlines')
     const airlinesData = [
       {
-        name: 'Latam',
+        name: 'LATAM',
         logo: 'https://img.usecurling.com/i?q=latam&color=red&shape=fill',
-        miles: 20.0,
+        miles: 25.0,
       },
       {
         name: 'Gol',
         logo: 'https://img.usecurling.com/i?q=gol&color=orange&shape=fill',
-        miles: 17.5,
+        miles: 20.0,
       },
       {
         name: 'Azul',
         logo: 'https://img.usecurling.com/i?q=azul&color=blue&shape=fill',
-        miles: 15.0,
+        miles: 22.5,
       },
       {
-        name: 'TAP',
-        logo: 'https://img.usecurling.com/i?q=tap&color=green&shape=fill',
-        miles: 25.0,
+        name: 'VOEPASS',
+        logo: 'https://img.usecurling.com/i?q=plane&color=gray&shape=fill',
+        miles: 18.0,
       },
       {
-        name: 'Emirates',
-        logo: 'https://img.usecurling.com/i?q=emirates&color=red&shape=fill',
-        miles: 30.0,
-      },
-      {
-        name: 'Qatar',
-        logo: 'https://img.usecurling.com/i?q=qatar&color=purple&shape=fill',
-        miles: 28.0,
+        name: 'Avianca',
+        logo: 'https://img.usecurling.com/i?q=avianca&color=red&shape=fill',
+        miles: 23.0,
       },
     ]
 
@@ -99,104 +92,66 @@ migrate(
       airlineIds[a.name] = rec.id
     }
 
-    const getFutureDate = (days, h, m) => {
+    const getFutureDate = (days, h, m, offsetMins = 0) => {
       const d = new Date()
       d.setDate(d.getDate() + days)
-      d.setHours(h, m, 0, 0)
+      d.setHours(h, m + offsetMins, 0, 0)
       return d.toISOString()
     }
 
     const colFlights = app.findCollectionByNameOrId('flights')
-    const flightsData = [
-      {
-        a: 'Azul',
-        o: 'GRU',
-        d: 'GIG',
-        depDays: 5,
-        depH: 8,
-        depM: 15,
-        arrH: 9,
-        arrM: 15,
-        dur: 60,
-        brl: 350,
-        miles: 18000,
-        seats: 120,
-        stops: 0,
-      },
-      {
-        a: 'Gol',
-        o: 'GRU',
-        d: 'GIG',
-        depDays: 5,
-        depH: 10,
-        depM: 0,
-        arrH: 11,
-        arrM: 0,
-        dur: 60,
-        brl: 280,
-        miles: 15000,
-        seats: 50,
-        stops: 0,
-      },
-      {
-        a: 'Latam',
-        o: 'GRU',
-        d: 'GIG',
-        depDays: 5,
-        depH: 14,
-        depM: 0,
-        arrH: 15,
-        arrM: 5,
-        dur: 65,
-        brl: 310,
-        miles: 16000,
-        seats: 20,
-        stops: 1,
-      },
-      {
-        a: 'Azul',
-        o: 'GIG',
-        d: 'GRU',
-        depDays: 12,
-        depH: 9,
-        depM: 0,
-        arrH: 10,
-        arrM: 0,
-        dur: 60,
-        brl: 400,
-        miles: 26000,
-        seats: 100,
-        stops: 0,
-      },
-      {
-        a: 'Gol',
-        o: 'BSB',
-        d: 'SDU',
-        depDays: 2,
-        depH: 7,
-        depM: 0,
-        arrH: 8,
-        arrM: 40,
-        dur: 100,
-        brl: 500,
-        miles: 25000,
-        seats: 80,
-        stops: 0,
-      },
+    const baseRoutes = [
+      { o: 'GRU', d: 'GIG', dur: 60, brl: 350 },
+      { o: 'GIG', d: 'GRU', dur: 60, brl: 350 },
+      { o: 'BSB', d: 'GRU', dur: 105, brl: 450 },
+      { o: 'GRU', d: 'BSB', dur: 105, brl: 450 },
+      { o: 'GRU', d: 'JFK', dur: 580, brl: 3500 },
+      { o: 'JFK', d: 'GRU', dur: 580, brl: 3500 },
+      { o: 'GRU', d: 'LHR', dur: 680, brl: 4500 },
+      { o: 'GIG', d: 'MIA', dur: 510, brl: 2800 },
+      { o: 'MIA', d: 'GIG', dur: 510, brl: 2800 },
+      { o: 'GRU', d: 'EZE', dur: 175, brl: 1200 },
+      { o: 'EZE', d: 'GRU', dur: 175, brl: 1200 },
+      { o: 'GRU', d: 'SCL', dur: 245, brl: 1400 },
+      { o: 'CNF', d: 'SSA', dur: 110, brl: 500 },
+      { o: 'SSA', d: 'REC', dur: 85, brl: 350 },
+      { o: 'VCP', d: 'POA', dur: 105, brl: 400 },
+      { o: 'POA', d: 'CWB', dur: 70, brl: 280 },
+      { o: 'CWB', d: 'GRU', dur: 65, brl: 250 },
+      { o: 'FOR', d: 'GRU', dur: 210, brl: 850 },
+      { o: 'GRU', d: 'CDG', dur: 690, brl: 4800 },
+      { o: 'CDG', d: 'GRU', dur: 690, brl: 4800 },
+      { o: 'GRU', d: 'AMS', dur: 700, brl: 4900 },
+      { o: 'GRU', d: 'MAD', dur: 630, brl: 4200 },
+      { o: 'LIM', d: 'GRU', dur: 285, brl: 1800 },
+      { o: 'MEX', d: 'GRU', dur: 530, brl: 3100 },
+      { o: 'GIG', d: 'EZE', dur: 195, brl: 1300 },
+      { o: 'BSB', d: 'MIA', dur: 480, brl: 2600 },
+      { o: 'VCP', d: 'MAD', dur: 610, brl: 3900 },
+      { o: 'SSA', d: 'GIG', dur: 125, brl: 550 },
+      { o: 'REC', d: 'FOR', dur: 80, brl: 320 },
+      { o: 'POA', d: 'EZE', dur: 115, brl: 800 },
     ]
 
-    for (const f of flightsData) {
+    const airlinesKeys = Object.keys(airlineIds)
+
+    for (let i = 0; i < 30; i++) {
+      const route = baseRoutes[i % baseRoutes.length]
+      const airline = airlinesKeys[i % airlinesKeys.length]
+
+      const depDays = (i % 14) + 1
+      const depH = 6 + (i % 16)
+      const depM = (i % 4) * 15
+
       const rec = new Record(colFlights)
-      rec.set('airline_id', airlineIds[f.a])
-      rec.set('origin_airport_id', airportIds[f.o])
-      rec.set('destination_airport_id', airportIds[f.d])
-      rec.set('departure_time', getFutureDate(f.depDays, f.depH, f.depM))
-      rec.set('arrival_time', getFutureDate(f.depDays, f.arrH, f.arrM))
-      rec.set('duration_minutes', f.dur)
-      rec.set('price_brl', f.brl)
-      rec.set('price_miles', f.miles)
-      rec.set('available_seats', f.seats)
-      rec.set('stops', f.stops)
+      rec.set('airline_id', airlineIds[airline])
+      rec.set('origin_airport_id', airportIds[route.o])
+      rec.set('destination_airport_id', airportIds[route.d])
+      rec.set('departure_time', getFutureDate(depDays, depH, depM))
+      rec.set('arrival_time', getFutureDate(depDays, depH, depM, route.dur))
+      rec.set('duration_minutes', route.dur)
+      rec.set('price_brl', route.brl + i * 10)
+      rec.set('available_seats', 20 + ((i * 5) % 150))
       app.save(rec)
     }
   },
